@@ -11,7 +11,8 @@ OpenPose - Installation
 7. [Installation](#installation)
 8. [Reinstallation](#reinstallation)
 9. [Uninstallation](#uninstallation)
-10. [Optional Settings](#optional-settings)
+10. [Deploying OpenPose (Exporting OpenPose to Other Projects)](#desploying-openpose-exporting-openpose-to-other-projects)
+11. [Optional Settings](#optional-settings)
     1. [Maximum Speed](#maximum-speed)
     2. [COCO and MPI Models](#coco-and-mpi-models)
     3. [Python API](#python-api)
@@ -20,12 +21,13 @@ OpenPose - Installation
     6. [Mac OSX Version](#mac-osx-version)
     7. [3D Reconstruction Module](#3d-reconstruction-module)
     8. [Calibration Module](#calibration-module)
-    9. [Compiling without cuDNN](#compiling-without-cudnn)
-    10. [Custom Caffe](#custom-caffe)
-    11. [Custom NVIDIA NVCaffe](#custom-nvidia-nvcaffe)
-    12. [Custom OpenCV](#custom-opencv)
-    13. [Doxygen Documentation Autogeneration (Ubuntu Only)](#doxygen-documentation-autogeneration-ubuntu-only)
-    14. [CMake Command Line Configuration (Ubuntu Only)](#cmake-command-line-configuration-ubuntu-only)
+    9. [Unity Compatible Version](#unity-compatible-version)
+    10. [Compiling without cuDNN](#compiling-without-cudnn)
+    11. [Custom Caffe](#custom-caffe)
+    12. [Custom NVIDIA NVCaffe](#custom-nvidia-nvcaffe)
+    13. [Custom OpenCV](#custom-opencv)
+    14. [Doxygen Documentation Autogeneration (Ubuntu Only)](#doxygen-documentation-autogeneration-ubuntu-only)
+    15. [CMake Command Line Configuration (Ubuntu Only)](#cmake-command-line-configuration-ubuntu-only)
 
 
 
@@ -51,13 +53,19 @@ This installation section is only intended if you plan to modify the OpenPose co
 ## Community-Based Work
 We add links to some community-based work based on OpenPose. Note: We do not support them, and we will remove GitHub issues opened asking about them as well as block those users from posting again. If you face any issue, comment only in the comment IDs especified below and/or on their respective GitHubs.
 
-- [ROS example](https://github.com/firephinx/openpose_ros) (based on a very old OpenPose version). For questions and more details, read and post ONLY on [issue thread #51](https://github.com/CMU-Perceptual-Computing-Lab/openpose/issues/51).
+- ROS examples:
+    - [ROS example 1](https://github.com/ravijo/ros_openpose). For questions and more details, read and post ONLY on [issue thread #891](https://github.com/CMU-Perceptual-Computing-Lab/openpose/issues/891).
+    - [ROS example 2](https://github.com/firephinx/openpose_ros) (based on a very old OpenPose version). For questions and more details, read and post ONLY on [issue thread #51](https://github.com/CMU-Perceptual-Computing-Lab/openpose/issues/51).
 
 - Docker Images. For questions and more details, read and post ONLY on [issue thread #347](https://github.com/CMU-Perceptual-Computing-Lab/openpose/issues/347).
     - Dockerfile working also with CUDA 10:
-        - [Link 1](https://github.com/esemeniuc/openpose-docker), it claims to also include Python support. Read and post ONLY on [issue thread #1102](https://github.com/CMU-Perceptual-Computing-Lab/openpose/issues/1102).
-        - [Link 2](https://github.com/ExSidius/openpose-docker/blob/master/Dockerfile).
-        - [Link 3](https://cloud.docker.com/repository/docker/exsidius/openpose/general).
+        - Option 1:
+            - 1. (if necessary) Install the latest version of docker (There are extra steps, but if you're on Ubuntu, the main one is `sudo apt-get install docker-ce`.  Other steps can be found [here](https://phoenixnap.com/kb/how-to-install-docker-on-ubuntu-18-04) )
+            - 2. `docker pull exsidius/openpose`
+            - 3. [more details](https://cloud.docker.com/repository/docker/exsidius/openpose/general) 
+        - [Link 2](https://github.com/esemeniuc/openpose-docker), it claims to also include Python support. Read and post ONLY on [issue thread #1102](https://github.com/CMU-Perceptual-Computing-Lab/openpose/issues/1102).
+        - [Link 3](https://github.com/ExSidius/openpose-docker/blob/master/Dockerfile).
+        - [Link 4](https://cloud.docker.com/repository/docker/exsidius/openpose/general).
     - Dockerfile working only with CUDA 8:
         - [Dockerfile - OpenPose v1.4.0, OpenCV, CUDA 8, CuDNN 5, Python2.7](https://github.com/tlkh/openpose). Read and post ONLY on [issue thread #1102](https://github.com/CMU-Perceptual-Computing-Lab/openpose/issues/1102).
         - [Dockerfile - OpenPose v1.4.0, OpenCV, CUDA 8, CuDNN 6, Python2.7](https://gist.github.com/moiseevigor/11c02c694fc0c22fccd59521793aeaa6).
@@ -124,7 +132,6 @@ The instructions in this section describe the steps to build OpenPose using CMak
 3. [OpenPose Configuration](#openpose-configuration)
 4. [OpenPose Building](#openpose-building)
 5. [Run OpenPose](#run-openpose)
-6. [OpenPose from other Projects (Ubuntu and Mac)](#openpose-from-other-projects-ubuntu-and-mac)
 
 
 
@@ -165,11 +172,18 @@ Note: If you prefer to use your own custom Caffe or OpenCV versions, see [Custom
 
 
 ### OpenPose Building
-#### Ubuntu and Mac
-Finally, build the project by running the following commands.
+#### Ubuntu
+Build the project by running the following commands.
 ```
 cd build/
 make -j`nproc`
+```
+
+#### Mac
+Build the project by running the following commands.
+```
+cd build/
+make -j`sysctl -n hw.physicalcpu`
 ```
 
 #### Windows
@@ -202,42 +216,6 @@ Check OpenPose was properly installed by running it on the default images, video
 
 
 
-### OpenPose from other Projects (Ubuntu and Mac)
-If you only intend to use the OpenPose demo, you might skip this step. This step is only recommended if you plan to use the OpenPose API from other projects.
-
-To install the OpenPose headers and libraries into the system environment path (e.g., `/usr/local/` or `/usr/`), run the following command.
-```
-cd build/
-sudo make install
-```
-
-Once the installation is completed, you can use OpenPose in your other project using the `find_package` cmake command. Below, is a small example `CMakeLists.txt`. In order to use this script, you also need to copy `FindGFlags.cmake` and `FindGlog.cmake` into your `<project_root_directory>/cmake/Modules/` (create the directory if necessary).
-```
-cmake_minimum_required(VERSION 2.8.7)
-
-add_definitions(-std=c++11)
-
-list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake/Modules")
-
-find_package(GFlags)
-find_package(Glog)
-find_package(OpenCV)
-find_package(OpenPose REQUIRED)
-
-include_directories(${OpenPose_INCLUDE_DIRS} ${GFLAGS_INCLUDE_DIR} ${GLOG_INCLUDE_DIR} ${OpenCV_INCLUDE_DIRS})
-
-add_executable(example.bin example.cpp)
-
-target_link_libraries(example.bin ${OpenPose_LIBS} ${GFLAGS_LIBRARY} ${GLOG_LIBRARY} ${OpenCV_LIBS})
-```
-
-If Caffe was built with OpenPose, it will automatically find it. Otherwise, you will need to link Caffe again as shown below (otherwise, you might get an error like `/usr/bin/ld: cannot find -lcaffe`).
-```
-link_directories(<path_to_caffe_installation>/caffe/build/install/lib)
-```
-
-
-
 ## Reinstallation
 In order to re-install OpenPose:
 1. (Ubuntu and Mac) If you ran `sudo make install`, then run `sudo make uninstall` in `build/`.
@@ -251,6 +229,11 @@ In order to re-install OpenPose:
 In order to uninstall OpenPose:
 1. (Ubuntu and Mac) If you ran `sudo make install`, then run `sudo make uninstall` in `build/`.
 2. Remove the OpenPose folder.
+
+
+
+## Deploying OpenPose (Exporting OpenPose to Other Projects)
+See [doc/deployment.md](./deployment.md).
 
 
 
@@ -320,7 +303,7 @@ If you only have an integrated Intel Graphics card, then it will most probably b
 build/examples/openpose/openpose.bin --num_gpu 1 --num_gpu_start 1
 ```
 
-Also as a side note, if the default installation fails (i.e., the one explained above), instal Caffe separately and set `BUILD_CAFFE` to false in the CMake config. Steps:
+Also as a side note, if the default installation fails (i.e., the one explained above), install Caffe separately and set `BUILD_CAFFE` to false in the CMake config. Steps:
 - Re-create the build folder: `rm -rf build; mkdir build; cd build`.
 - `brew uninstall caffe` to remove the version of Caffe previously installed via cmake.
 - `brew install caffe` to install Caffe separately.
@@ -371,6 +354,13 @@ After installation, check the [doc/modules/calibration_module.md](./modules/cali
 
 
 
+#### Unity Compatible Version
+Check [**Unity Plugin**](https://github.com/CMU-Perceptual-Computing-Lab/openpose_unity_plugin).
+
+However, the OpenPose Unity version will crash if if faces an error while it is not used inside Unity. Thus, do not use it without Unity. Although this version would work as long as no errors occur.
+
+
+
 #### Compiling without cuDNN
 The [cuDNN](https://developer.nvidia.com/cudnn) library is not mandatory, but required for full keypoint detection accuracy. In case your graphics card is not compatible with cuDNN, you can disable it by unchecking `USE_CUDNN` in CMake.
 
@@ -404,6 +394,8 @@ To use a NVIDIA's NVCaffe docker image instead of the standard Caffe, set the fo
 1. Set the `DL_FRAMEWORK` variable to `NV_CAFFE`.
 2. Set the `BUILD_CAFFE` variable to `OFF`.
 3. Set the correct `Caffe_INCLUDE_DIRS` and `Caffe_LIBS` paths following [Custom Caffe](#custom-caffe).
+
+In addition, [peter-uhrig.de/openpose-with-nvcaffe-in-a-singularity-container-with-support-for-multiple-architectures/](http://peter-uhrig.de/openpose-with-nvcaffe-in-a-singularity-container-with-support-for-multiple-architectures/) contains a detailed step-by-step guide to install a portable container with NVCaffe and support for multiple NVidia cards as well as CPU.
 
 
 

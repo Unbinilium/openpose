@@ -1,10 +1,11 @@
+#include <openpose/pose/poseExtractorNet.hpp>
+#include <cmath> // std::round
 #ifdef USE_CUDA
     #include <cuda_runtime_api.h>
     #include <openpose/gpu/cuda.hpp>
 #endif
 #include <openpose/core/enumClasses.hpp>
 #include <openpose/utilities/fastMath.hpp>
-#include <openpose/pose/poseExtractorNet.hpp>
 
 namespace op
 {
@@ -334,7 +335,7 @@ namespace op
         try
         {
             auto& propertyElement = mProperties.at((int)property);
-            log("Property " + std::to_string((int)property)
+            opLog("Property " + std::to_string((int)property)
                 + " set from " + std::to_string(propertyElement)
                 + " to " + std::to_string(value), Priority::High);
             propertyElement = {value};

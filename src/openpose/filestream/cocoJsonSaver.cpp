@@ -1,8 +1,8 @@
+#include <openpose/filestream/cocoJsonSaver.hpp>
 #include <numeric> // std::iota
 #include <openpose/pose/poseParametersRender.hpp>
 #include <openpose/utilities/fileSystem.hpp>
 #include <openpose/utilities/string.hpp>
-#include <openpose/filestream/cocoJsonSaver.hpp>
 
 namespace op
 {
@@ -10,14 +10,15 @@ namespace op
     {
         try
         {
-            return getLastNumber(imageName);
+            return (int)getLastNumber(imageName);
         }
         catch (const std::exception& e)
         {
             const std::string errorMessage = "`--write_coco_json` is to be used with the original "
                 + std::string(cocoJsonFormat == CocoJsonFormat::Car ? "car" : "COCO")
                 + " dataset images. If you are not"
-                " applying those, OpenPose cannot obtain the ID from their file names. Error details: "
+                " applying those, OpenPose cannot obtain the ID from their file names. Image name:\n"
+                + imageName + "\n Error details: "
                 + e.what();
             error(errorMessage, __LINE__, __FUNCTION__, __FILE__);
             return -1;

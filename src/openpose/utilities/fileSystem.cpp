@@ -1,4 +1,8 @@
-#include <cstdio> // fopen
+#include <openpose/utilities/fileSystem.hpp>
+#include <algorithm> // std::replace
+#include <cctype> // std::isdigit
+#include <cstdio> // std::fopen
+#include <cstring> // std::strncmp
 #ifdef _WIN32
     #include <direct.h> // _mkdir
     #include <windows.h> // DWORD, GetFileAttributesA
@@ -9,7 +13,6 @@
     #error Unknown environment!
 #endif
 #include <openpose/utilities/string.hpp>
-#include <openpose/utilities/fileSystem.hpp>
 
 namespace op
 {
@@ -388,12 +391,12 @@ namespace op
             // Get files on directory with the desired extensions
             if (extensions == Extensions::Images)
             {
-                const std::vector<std::string> extensions{
+                const std::vector<std::string> extensionNames{
                     // Completely supported by OpenCV
                     "bmp", "dib", "pbm", "pgm", "ppm", "sr", "ras",
                     // Most of them supported by OpenCV
                     "jpg", "jpeg", "png"};
-                return getFilesOnDirectory(directoryPath, extensions);
+                return getFilesOnDirectory(directoryPath, extensionNames);
             }
             // Unknown kind of extensions
             else
