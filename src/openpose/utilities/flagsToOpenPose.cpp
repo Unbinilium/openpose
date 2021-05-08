@@ -90,10 +90,15 @@ namespace op
                 return ScaleMode::ZeroToOne;
             else if (keypointScaleMode == 4)
                 return ScaleMode::PlusMinusOne;
+            else if (keypointScaleMode == 5)
+                return ScaleMode::ZeroToOneFixedAspect;
+            else if (keypointScaleMode == 6)
+                return ScaleMode::PlusMinusOneFixedAspect;
             // else
-            const std::string message = "Integer does not correspond to any scale mode: (0, 1, 2, 3, 4) for"
-                                        " (InputResolution, NetOutputResolution, OutputResolution, ZeroToOne,"
-                                        " PlusMinusOne).";
+            const std::string message = "Integer does not correspond to any scale mode: set to (0, 1, 2, 3, 4, 5, 6)"
+                                        " for (InputResolution, NetOutputResolution, OutputResolution, ZeroToOne,"
+                                        " PlusMinusOne, ZeroToOneFixedAspect, PlusMinusOneFixedAspect),"
+                                        " respectively.";
             error(message, __LINE__, __FUNCTION__, __FILE__);
             return ScaleMode::InputResolution;
         }
@@ -117,16 +122,21 @@ namespace op
                 return ScaleMode::UnsignedChar;
             else if (heatMapScaleMode == 3)
                 return ScaleMode::NoScale;
+            else if (heatMapScaleMode == 4)
+                return ScaleMode::ZeroToOneFixedAspect;
+            else if (heatMapScaleMode == 5)
+                return ScaleMode::PlusMinusOneFixedAspect;
             // else
-            const std::string message = "Integer does not correspond to any scale mode: (0, 1, 2, 3) for"
-                                        " (PlusMinusOne, ZeroToOne, UnsignedChar, NoScale).";
+            const std::string message = "Integer does not correspond to any scale mode: set to (0, 1, 2, 3, 4, 5)"
+                                        " for (PlusMinusOne, ZeroToOne, UnsignedChar, NoScale, PlusMinusOneFixedAspect,"
+                                        " ZeroToOneFixedAspect), respectively.";
             error(message, __LINE__, __FUNCTION__, __FILE__);
-            return ScaleMode::PlusMinusOne;
+            return ScaleMode::PlusMinusOneFixedAspect;
         }
         catch (const std::exception& e)
         {
             error(e.what(), __LINE__, __FUNCTION__, __FILE__);
-            return ScaleMode::PlusMinusOne;
+            return ScaleMode::PlusMinusOneFixedAspect;
         }
     }
 
